@@ -178,3 +178,97 @@ const amountInput = document.getElementById("bet-amount") as HTMLInputElement;
 const expectedInput = document.getElementById("expected-number") as HTMLInputElement;
 const placeBetBtn = document.getElementById("place-bet")!;
 const resultText = document.getElementById("result-text")!;
+
+
+let betAmount = 1;
+let expectedNumber = 1;
+let isBetPlaced = false;
+
+expectedInput.addEventListener("input", () => {
+  const value = Number(expectedInput.value);
+
+  if (value >= 1 && value <= 6) {
+    expectedNumber = value;
+  } else {
+    expectedNumber = 0;
+  }
+});
+
+
+amountInput.addEventListener("input", () => {
+  const value = Number(amountInput.value);
+  betAmount = value > 0 ? value : 1;
+});
+
+
+
+placeBetBtn.addEventListener("click", () => {
+  if (betAmount <= 0) {
+    resultText.innerText = "❌ Enter valid amount";
+    resultText.className = "lose";
+    return;
+  }
+
+  if (expectedNumber < 1 || expectedNumber > 6) {
+    resultText.innerText = "❌ Choose number 1 - 6";
+    resultText.className = "lose";
+    return;
+  }
+
+  isBetPlaced = true;
+  resultText.innerText = "🎲 Rolling...";
+  resultText.className = "";
+
+  placeBetRollDice(betAmount, expectedNumber);
+
+  
+});
+
+
+const placeBetRollDice = (betAmount: number, expectedNumber: number) => {
+  if (isRolling) return;
+
+  isRolling = true;
+
+  if (displaySprite) {
+    app.stage.removeChild(displaySprite);
+    displaySprite.destroy();
+    displaySprite = null;
+  }
+
+  diceSprite.visible = true;
+  diceSprite.play();
+
+  const rollDuration = 1000 + Math.random() * 1000;
+
+  setTimeout(() => {
+    diceSprite.stop();
+    diceSprite.visible = false;
+
+    const finalNumber = Math.floor(Math.random() * 6) + 1;
+
+    displaySprite = new Sprite(DisplayTexture[finalNumber]);
+    displaySprite.anchor.set(0.5);
+    displaySprite.x = app.screen.width / 2;
+    displaySprite.y = app.screen.height / 2;
+    displaySprite.scale.set(1.5);
+
+    app.stage.addChild(displaySprite);
+
+    updateHistory(finalNumber);
+
+    // 🎯 BET RESULT CHECK
+    if (expectedNumber === finalNumber) {
+      const winAmount = betAmount * 10;
+      resultText.innerText = `🎉 You WON ₹${winAmount}`;
+      resultText.className = "win";
+    } else {
+      resultText.innerText = "❌ You Lost";
+      resultText.className = "lose";
+    }
+
+    isRolling = false;
+    isBetPlaced = false;
+
+  }, rollDuration);
+};
