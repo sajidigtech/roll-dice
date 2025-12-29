@@ -162,6 +162,10 @@ const rollDiceFunction = async () => {
 button.on("pointerdown", rollDiceFunction)
 
 
+// dom model for bet u can use place bet type esa !
+// number set and all !
+
+
 
 
 
