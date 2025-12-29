@@ -174,3 +174,7 @@ button.on("pointerdown", rollDiceFunction)
 
 
 
+const amountInput = document.getElementById("bet-amount") as HTMLInputElement;
+const expectedInput = document.getElementById("expected-number") as HTMLInputElement;
+const placeBetBtn = document.getElementById("place-bet")!;
+const resultText = document.getElementById("result-text")!;
