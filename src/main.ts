@@ -26,6 +26,7 @@ const DisplayTexture: Record<number, Texture> = {
   5: Texture.from("roll_4_12"),
   6: Texture.from("roll_4_8"),
 };
+// important as it will display the texture on screen -> sprite esa
 
 
 
@@ -178,6 +179,9 @@ const amountInput = document.getElementById("bet-amount") as HTMLInputElement;
 const expectedInput = document.getElementById("expected-number") as HTMLInputElement;
 const placeBetBtn = document.getElementById("place-bet")!;
 const resultText = document.getElementById("result-text")!;
+const balanceAmountEl = document.getElementById("balance-amount")!;
+let balance = 1000;
+
 
 
 let betAmount = 1;
@@ -218,10 +222,12 @@ placeBetBtn.addEventListener("click", () => {
   isBetPlaced = true;
   resultText.innerText = "🎲 Rolling...";
   resultText.className = "";
+  balance -= betAmount;
+  balanceAmountEl.innerText = balance.toString();
 
   placeBetRollDice(betAmount, expectedNumber);
 
-  
+
 });
 
 
@@ -260,11 +266,17 @@ const placeBetRollDice = (betAmount: number, expectedNumber: number) => {
     // 🎯 BET RESULT CHECK
     if (expectedNumber === finalNumber) {
       const winAmount = betAmount * 10;
+      balance += winAmount;
+      balanceAmountEl.innerText = balance.toString();
+      
       resultText.innerText = `🎉 You WON ₹${winAmount}`;
       resultText.className = "win";
+      
+
     } else {
       resultText.innerText = "❌ You Lost";
       resultText.className = "lose";
+
     }
 
     isRolling = false;
